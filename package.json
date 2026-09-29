@@ -1,0 +1,14 @@
+{
+  "name": "shebeke",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "web:install": "npm --prefix apps/web install",
+    "web:build": "npm --prefix apps/web run build",
+    "android:sync": "npm --prefix apps/web run build && npx cap sync android",
+    "android:open": "npx cap open android"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.4.0"
+  }
+}

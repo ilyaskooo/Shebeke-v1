@@ -1,0 +1,42 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-shebeke}
+      POSTGRES_USER: ${POSTGRES_USER:-shebeke}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-CHANGE_THIS}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ../apps/api/src/schema.sql:/docker-entrypoint-initdb.d/001-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL","pg_isready -U ${POSTGRES_USER:-shebeke} -d ${POSTGRES_DB:-shebeke}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  api:
+    build: ../apps/api
+    env_file: ../.env
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgres://shebeke:CHANGE_THIS@db:5432/shebeke}
+      WEB_ORIGIN: ${WEB_ORIGIN:-http://localhost:3000}
+      API_PUBLIC_URL: ${API_PUBLIC_URL:-http://localhost:4000}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ../apps/api/uploads:/app/uploads
+    ports:
+      - "4000:4000"
+
+  web:
+    build: ../apps/web
+    environment:
+      VITE_API_URL: ${API_PUBLIC_URL:-http://localhost:4000}
+    depends_on:
+      - api
+    ports:
+      - "3000:3000"
+
+volumes:
+  pgdata:

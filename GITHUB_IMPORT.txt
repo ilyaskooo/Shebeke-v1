@@ -1,0 +1,11 @@
+SHEBEKE IMPORT
+
+Upload/replace the repository contents with everything in this folder.
+
+IMPORTANT:
+- Do not upload .env with secrets.
+- Use .env.example as a template.
+- In GitHub repository Settings -> Secrets and variables -> Actions -> Variables,
+  create VITE_API_URL with the public API URL.
+- Then Actions -> Build SHEBEKE Android APK -> Run workflow.
+- Download the generated shebeke-debug-apk artifact.
